@@ -1,2 +1,39 @@
-# RL-for-Finetunning-LLms
-### 📦 Repository: `LLM-Toxicity-Mitigation`  #### 🧠 Project Overview:  This repository contains the full implementation and evaluation code for our project on mitigating toxicity in large language models (LLMs) using three different fine-tuning methods: **Supervised Fine-Tuning (SFT)**, **Proximal Policy Optimization (PPO)**, and **Direct Preference Optimization (DPO)**. The target model is [TinyLlama-1.1B](https://huggingface.co/csarron/TinyLlama-1.1B-Chat-v1.0), and the dataset used is [`unalignment/toxic-dpo-v0.2`](https://huggingface.co/datasets/unalignment/toxic-dpo-v0.2).  The goal is to compare these methods under identical settings in terms of safety alignment, particularly with respect to reducing output toxicity, and to assess their trade-offs in terms of performance, simplicity, and efficiency.  ---  ### 📁 Contents  * **`DataPrep.ipynb`**   Prepares the dataset for training by formatting prompt–response pairs, filtering entries, and optionally extracting chosen/rejected samples for DPO and PPO pipelines. Includes tokenization and splitting routines.  * **`SFT.ipynb`**   Implements Supervised Fine-Tuning on the TinyLlama model using only the preferred (chosen) responses from the dataset. Uses cross-entropy loss and LoRA adapters for efficient updates.  * **`PPO.ipynb`**   Trains the model using Proximal Policy Optimization with rewards derived from Detoxify-based toxicity scores. Includes KL control and multiple PPO passes per batch.  * **`DPO.ipynb`**   Implements Direct Preference Optimization by contrasting preferred and rejected responses without training a reward model. Uses a contrastive log-ratio loss between model and reference outputs.  * **`Report/`**   Contains the LaTeX source files and figures used to generate the final project report, including results analysis, charts, and formatted references.  ---  ### 🛠 Requirements  * Python 3.10+ * Hugging Face Transformers * `trl`, `accelerate`, `peft`, `Detoxify`, and other dependencies listed in `requirements.txt`.  ---  Let me know if you’d like to generate a `README.md`, or include setup instructions, sample outputs, or demo links!
+# 🧪 LLM-Toxicity-Mitigation
+
+This repository contains the full implementation for our project on mitigating toxicity in large language models (LLMs) using three alignment methods: **Supervised Fine-Tuning (SFT)**, **Proximal Policy Optimization (PPO)**, and **Direct Preference Optimization (DPO)**. The project uses the [TinyLlama-1.1B](https://huggingface.co/csarron/TinyLlama-1.1B-Chat-v1.0) model and evaluates its performance on toxic prompts after training with each method.
+
+We rely on the [`unalignment/toxic-dpo-v0.2`](https://huggingface.co/datasets/unalignment/toxic-dpo-v0.2) dataset and [Detoxify](https://github.com/unitaryai/detoxify) as a reward and evaluation signal.
+
+---
+
+## 📂 Repository Structure
+
+| File/Folder         | Description                                                                 |
+|---------------------|-----------------------------------------------------------------------------|
+| `DataPrep.ipynb`    | Prepares and formats the dataset for all methods, including prompt extraction and tokenization. |
+| `SFT.ipynb`         | Implements Supervised Fine-Tuning using LoRA adapters and chosen responses. |
+| `PPO.ipynb`         | Trains the model using PPO with rewards derived from Detoxify (reward = 1 - toxicity). |
+| `DPO.ipynb`         | Applies Direct Preference Optimization using chosen vs. rejected samples.   |
+| `Report/`           | Contains the LaTeX source files, charts, and bibliography for the final report. |
+
+---
+
+## 📊 Summary of Results
+
+| Model              | Avg. Toxicity ↓ |
+|--------------------|-----------------|
+| Original (no tuning) | 0.4095         |
+| SFT                | **0.0806**       |
+| PPO                | 0.2295           |
+| DPO                | 0.3672           |
+
+> SFT achieved the lowest toxicity, followed by PPO. DPO offered moderate improvements.
+
+---
+
+## 🛠 Installation
+
+Make sure to use Python 3.10+ and install dependencies via:
+
+```bash
+pip install -r requirements.txt
